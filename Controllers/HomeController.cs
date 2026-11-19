@@ -13,5 +13,9 @@ namespace GrooveyTunes.Controllers
         {
             return View();
         }
+        public ActionResult Search(string query)
+        {
+            return View();
+        }
     }
 }

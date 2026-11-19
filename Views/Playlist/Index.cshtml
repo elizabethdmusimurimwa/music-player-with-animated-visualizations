@@ -1,7 +1,59 @@
 ﻿
+@model IEnumerable<GrooveyTunes.Models.Playlist>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "My Playlists";
 }
 
-<h2>Index</h2>
+<div class="container mt-4">
 
+    <h2>My Playlists</h2>
+
+    <p>
+        @Html.ActionLink("Create New Playlist", "Create", "Playlist",
+                 null, new { @class = "btn btn-primary" })
+    </p>
+
+    <div class="row">
+
+        @foreach (var playlist in Model)
+        {
+            <div class="col-md-4 mb-4">
+
+                <div class="card h-100">
+
+                    @if (!string.IsNullOrEmpty(playlist.ImagePath))
+                    {
+                        <img src="@Url.Content(playlist.ImagePath)"
+                             class="card-img-top"
+                             style="height:180px; object-fit:cover;"
+                             alt="@playlist.PlaylistName" />
+                    }
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            @playlist.PlaylistName
+                        </h5>
+
+                        @Html.ActionLink(
+                                 "View Playlist",
+                                 "Details",
+                                 new { id = playlist.PlaylistId },
+                                 new { @class = "btn btn-primary" })
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+    @if (!Model.Any())
+    {
+        <p>No playlists available yet. Create your first playlist!</p>
+    }
+
+</div>

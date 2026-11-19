@@ -13,5 +13,14 @@ namespace GrooveyTunes.Controllers
         {
             return View();
         }
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        public ActionResult Create()
+        {
+            return View();
+        }
     }
 }

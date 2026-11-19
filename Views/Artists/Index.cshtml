@@ -1,7 +1,42 @@
 ﻿
+@model IEnumerable<GrooveyTunes.Models.Artist>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Artists";
 }
 
-<h2>Index</h2>
+<div class="container mt-4">
+    <h2>Artists</h2>
+    <p>Explore the artists available on GroovyTunes.</p>
 
+    <div class="row">
+        @foreach (var artist in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+
+                    @if (!string.IsNullOrEmpty(artist.ImagePath))
+                    {
+                        <img src="@Url.Content(artist.ImagePath)"
+                             class="card-img-top"
+                             alt="@artist.ArtistName"
+                             style="height: 220px; object-fit: cover;" />
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @artist.ArtistName
+                        </h5>
+
+                        <a href="@Url.Action("Details", "Artists",
+                            new { id = artist.ArtistId })"
+                           class="btn btn-primary">
+                            View Artist
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>

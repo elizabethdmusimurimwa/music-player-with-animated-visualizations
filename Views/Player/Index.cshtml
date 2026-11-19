@@ -1,7 +1,54 @@
 ﻿
+@model IEnumerable<GrooveyTunes.Models.Song>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Music Player";
 }
 
-<h2>Index</h2>
+<div class="container mt-4">
+    <h2>Music Library</h2>
+    <p>Browse and play songs available on GroovyTunes.</p>
 
+    <div class="row">
+        @foreach (var song in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+
+                    @if (!string.IsNullOrEmpty(song.ImagePath))
+                    {
+                        <img src="@Url.Content(song.ImagePath)"
+                             class="card-img-top"
+                             alt="@song.Title"
+                             style="height: 200px; object-fit: cover;" />
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">@song.Title</h5>
+
+                        <p class="card-text">
+                            Artist: @(song.Artist?.ArtistName ?? "Unknown")
+                        </p>
+
+                        <p class="card-text">
+                            Album: @song.Album
+                        </p>
+
+                        @if (!string.IsNullOrEmpty(song.AudioPath))
+                        {
+                            <audio controls style="width: 100%;">
+                                <source src="@Url.Content(song.AudioPath)" />
+                                Your browser does not support audio playback.
+                            </audio>
+                        }
+                        else
+                        {
+                            <p>Audio file unavailable.</p>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
