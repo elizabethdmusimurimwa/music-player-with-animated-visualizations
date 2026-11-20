@@ -95,13 +95,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\auth.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\auth.js" />
     <Content Include="Scripts\GrooveyTunes.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ArtistsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlayerController.cs" />
@@ -109,6 +112,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AppUser.cs" />
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\GrooveyTunesContext.cs" />
@@ -130,6 +135,8 @@
     <Content Include="Views\Artists\Details.cshtml" />
     <Content Include="Views\Playlist\Create.cshtml" />
     <Content Include="Views\Shared\_MusicPlayer.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Signup.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

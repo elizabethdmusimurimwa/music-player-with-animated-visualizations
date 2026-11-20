@@ -1,0 +1,110 @@
+﻿@model GrooveyTunes.Models.SignupViewModel
+@{
+    Layout = null;
+}
+@functions {
+    string Cls(string key)
+    {
+        System.Web.Mvc.ModelState state;
+        if (ViewData.ModelState.TryGetValue(key, out state) && state.Errors.Count > 0)
+        {
+            return "invalid";
+        }
+        return "";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign up | GrooveyTunes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="@Url.Content("~/Content/auth.css")">
+</head>
+<body>
+    <div class="page">
+
+        <aside class="brand">
+            <div class="logo">GrooveyTunes<span>.</span></div>
+            <div>
+                <div class="eq" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <h2>Build a library that sounds like you.</h2>
+                <p>Save songs, make playlists and follow the artists you love. It takes under a minute.</p>
+            </div>
+        </aside>
+
+        <main class="panel">
+            <div class="card">
+                <h1>Create your account</h1>
+                <p class="sub">Join and start listening.</p>
+
+                @using (Html.BeginForm("Signup", "Account", FormMethod.Post, new { novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "form-error" })
+
+                    <div class="field @Cls("Username")">
+                        <label for="username">Username</label>
+                        <div class="input-wrap">
+                            @Html.TextBoxFor(m => m.Username, new { id = "username", type = "text", data_rule = "username", placeholder = "e.g. night_owl", autocomplete = "username" })
+                        </div>
+                        <div class="error">@Html.ValidationMessageFor(m => m.Username)</div>
+                    </div>
+
+                    <div class="field @Cls("Email")">
+                        <label for="email">Email</label>
+                        <div class="input-wrap">
+                            @Html.TextBoxFor(m => m.Email, new { id = "email", type = "email", data_rule = "email", placeholder = "you@example.com", autocomplete = "email" })
+                        </div>
+                        <div class="error">@Html.ValidationMessageFor(m => m.Email)</div>
+                    </div>
+
+                    <div class="field @Cls("Password")">
+                        <label for="password">Password</label>
+                        <div class="input-wrap has-toggle">
+                            @Html.PasswordFor(m => m.Password, new { id = "password", data_rule = "newPassword", placeholder = "Create a password", autocomplete = "new-password" })
+                            <button type="button" class="toggle">Show</button>
+                        </div>
+                        <div class="meter"><div id="meterBar"></div></div>
+                        <div class="meter-label" id="meterLabel"></div>
+                        <ul class="checklist">
+                            <li data-check="length">8+ characters</li>
+                            <li data-check="upper">Uppercase letter</li>
+                            <li data-check="lower">Lowercase letter</li>
+                            <li data-check="number">A number</li>
+                        </ul>
+                        <div class="error">@Html.ValidationMessageFor(m => m.Password)</div>
+                    </div>
+
+                    <div class="field @Cls("ConfirmPassword")">
+                        <label for="confirm">Confirm password</label>
+                        <div class="input-wrap has-toggle">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { id = "confirm", data_rule = "confirmPassword", placeholder = "Type it again", autocomplete = "new-password" })
+                            <button type="button" class="toggle">Show</button>
+                        </div>
+                        <div class="error">@Html.ValidationMessageFor(m => m.ConfirmPassword)</div>
+                    </div>
+
+                    <div class="field @Cls("AcceptTerms")">
+                        <label class="check">
+                            @Html.CheckBoxFor(m => m.AcceptTerms, new { id = "terms", data_rule = "terms" })
+                            <span>I agree to the <a href="#">terms</a> and <a href="#">privacy policy</a></span>
+                        </label>
+                        <div class="error">@Html.ValidationMessageFor(m => m.AcceptTerms)</div>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">Create account</button>
+                }
+
+                <p class="links">Already have an account? <a href="@Url.Action("Login", "Account")">Log in</a></p>
+            </div>
+        </main>
+
+    </div>
+    <script src="@Url.Content("~/Scripts/auth.js")"></script>
+</body>
+</html>

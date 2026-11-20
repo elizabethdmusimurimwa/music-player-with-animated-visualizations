@@ -1,0 +1,88 @@
+﻿@model GrooveyTunes.Models.LoginViewModel
+@{
+    Layout = null;
+}
+@functions {
+    // Adds the "invalid" class to a field when the server found an error in it
+    string Cls(string key)
+    {
+        System.Web.Mvc.ModelState state;
+        if (ViewData.ModelState.TryGetValue(key, out state) && state.Errors.Count > 0)
+        {
+            return "invalid";
+        }
+        return "";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in | GrooveyTunes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="@Url.Content("~/Content/auth.css")">
+</head>
+<body>
+    <div class="page">
+
+        <aside class="brand">
+            <div class="logo">GrooveyTunes<span>.</span></div>
+            <div>
+                <div class="eq" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <h2>Your music, right where you left it.</h2>
+                <p>Pick up your playlists, favourite artists and the song you had on repeat.</p>
+            </div>
+        </aside>
+
+        <main class="panel">
+            <div class="card">
+                <h1>Welcome back</h1>
+                <p class="sub">Log in to keep listening.</p>
+
+                @if (TempData["Message"] != null)
+                {
+                    <div class="success show" style="margin-top:0;margin-bottom:18px">@TempData["Message"]</div>
+                }
+
+                @using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "form-error" })
+
+                    <div class="field @Cls("Email")">
+                        <label for="email">Email</label>
+                        <div class="input-wrap">
+                            @Html.TextBoxFor(m => m.Email, new { id = "email", type = "email", data_rule = "email", placeholder = "you@example.com", autocomplete = "email" })
+                        </div>
+                        <div class="error">@Html.ValidationMessageFor(m => m.Email)</div>
+                    </div>
+
+                    <div class="field @Cls("Password")">
+                        <label for="password">Password</label>
+                        <div class="input-wrap has-toggle">
+                            @Html.PasswordFor(m => m.Password, new { id = "password", data_rule = "loginPassword", placeholder = "Your password", autocomplete = "current-password" })
+                            <button type="button" class="toggle">Show</button>
+                        </div>
+                        <div class="error">@Html.ValidationMessageFor(m => m.Password)</div>
+                    </div>
+
+                    <div class="row">
+                        <label class="check">@Html.CheckBoxFor(m => m.RememberMe, new { id = "remember" }) Remember me</label>
+                        <span class="links"><a href="#">Forgot password?</a></span>
+                    </div>
+
+                    <button type="submit" class="btn" id="submitBtn">Log in</button>
+                }
+
+                <p class="links">New here? <a href="@Url.Action("Signup", "Account")">Create an account</a></p>
+            </div>
+        </main>
+
+    </div>
+    <script src="@Url.Content("~/Scripts/auth.js")"></script>
+</body>
+</html>

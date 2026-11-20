@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
   <Project Path="GrooveyTunes.csproj" Id="6b5f194d-1303-4789-9397-bd7b4e36acd8" />
 </Solution>
