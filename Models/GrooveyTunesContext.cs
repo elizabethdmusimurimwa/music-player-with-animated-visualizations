@@ -18,5 +18,7 @@ namespace GrooveyTunes.Models
 
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<PlaylistSong> PlaylistSongs { get; set; }
+
+        public DbSet<AppUser> AppUsers { get; set; }
     }
 }
