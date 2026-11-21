@@ -1,7 +1,70 @@
 ﻿
+@model GrooveyTunes.Models.Artist
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Artist Details";
 }
 
-<h2>Details</h2>
+<div class="container mt-4">
 
+    <h2>@Model.ArtistName</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        <img src="@Url.Content(Model.ImagePath)"
+             alt="@Model.ArtistName"
+             style="width:200px; height:200px; object-fit:cover; border-radius:10px;" />
+    }
+
+    <hr />
+
+    <h3>Biography</h3>
+
+    <p>
+        @(string.IsNullOrEmpty(Model.Biography)
+            ? "No biography available."
+            : Model.Biography)
+    </p>
+
+    <hr />
+
+    <h3>Songs by @Model.ArtistName</h3>
+
+    @if (Model.Songs != null && Model.Songs.Any())
+    {
+        <div class="row">
+
+            @foreach (var song in Model.Songs)
+            {
+                <div class="col-md-4 mb-3">
+
+                    <div class="card h-100">
+
+                        @if (!string.IsNullOrEmpty(song.ImagePath))
+                        {
+                            <img src="@Url.Content(song.ImagePath)"
+                                 class="card-img-top"
+                                 style="height:180px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@song.Title</h5>
+                            <p>Album: @song.Album</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <p>No songs available for this artist yet.</p>
+    }
+
+    @Html.ActionLink("Back to Artists", "Index", "Artists",
+            null, new { @class = "btn btn-secondary mt-3" })
+
+</div>

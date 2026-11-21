@@ -1,69 +1,40 @@
-﻿
-<div class="music-player">
+﻿<div class="music-player">
 
     <!-- Selected animation -->
-
     <div class="player-animation">
-
         <img id="playerAnimation"
              src="https://media.tenor.com/Lh9WGnxYz2wAAAAM/trampoline-king-julien.gif"
-             alt="Selected Animation" />
-
+             alt="Selected animation" />
     </div>
 
     <!-- Song information -->
-
     <div class="song-info">
-
         <h4 id="currentSong">No song selected</h4>
-
         <p id="currentArtist">Choose a song to play</p>
-
     </div>
 
     <!-- Music controls -->
-
     <div class="player-controls">
 
-        <button id="previousBtn">⏮</button>
-
-        <button id="playBtn">▶</button>
-
-        <button id="nextBtn">⏭</button>
+        <button type="button" id="previousBtn" title="Previous" aria-label="Previous">⏮</button>
+        <button type="button" id="playBtn" title="Play" aria-label="Play or pause">▶</button>
+        <button type="button" id="nextBtn" title="Next" aria-label="Next">⏭</button>
 
         <div class="progress-container">
-
             <span id="currentTime">0:00</span>
-
-            <input type="range"
-                   id="progressBar"
-                   min="0"
-                   max="100"
-                   value="0" />
-
+            <input type="range" id="progressBar" min="0" max="100" step="0.1" value="0" aria-label="Seek" />
             <span id="duration">0:00</span>
-
         </div>
 
     </div>
 
     <!-- Volume -->
-
     <div class="volume-control">
-
-        <span>🔊</span>
-
-        <input type="range"
-               id="volume"
-               min="0"
-               max="1"
-               step="0.1"
-               value="0.7" />
-
+        <span id="volumeIcon" title="Mute" role="button" style="cursor:pointer">🔊</span>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.7" aria-label="Volume" />
     </div>
 
     <!-- Audio element -->
-
-    <audio id="audioPlayer"></audio>
+    <audio id="audioPlayer" preload="metadata"></audio>
 
 </div>

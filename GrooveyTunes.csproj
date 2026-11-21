@@ -94,8 +94,10 @@
       <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
+   <ItemGroup>
     <Content Include="Content\auth.css" />
+    <Content Include="Content\Groovey-home.css" />
+    <Content Include="Content\Music\side-to-side.mp3" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\auth.js" />
@@ -124,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
+    <Content Include="App_Code\Icons.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

@@ -1,7 +1,74 @@
 ﻿
+@model GrooveyTunes.Models.Playlist
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Playlist Details";
 }
 
-<h2>Details</h2>
+<div class="container mt-4">
 
+    <h2>@Model.PlaylistName</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        <img src="@Url.Content(Model.ImagePath)"
+             alt="@Model.PlaylistName"
+             style="width:200px; height:200px; object-fit:cover;" />
+    }
+
+    <hr />
+
+    <h3>Songs in this Playlist</h3>
+
+    @if (Model.PlaylistSongs != null && Model.PlaylistSongs.Any())
+    {
+        <div class="row">
+
+            @foreach (var item in Model.PlaylistSongs)
+            {
+                <div class="col-md-4 mb-3">
+
+                    <div class="card h-100">
+
+                        @if (!string.IsNullOrEmpty(item.Song.ImagePath))
+                        {
+                            <img src="@Url.Content(item.Song.ImagePath)"
+                                 class="card-img-top"
+                                 style="height:180px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                @item.Song.Title
+                            </h5>
+
+                            <p>
+                                Artist:
+                                @(item.Song.Artist?.ArtistName ?? "Unknown Artist")
+                            </p>
+
+                            <p>
+                                Album: @item.Song.Album
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <p>No songs have been added to this playlist yet.</p>
+    }
+
+    <br />
+
+    @Html.ActionLink("Back to Playlists", "Index", "Playlist",
+            null, new { @class = "btn btn-secondary" })
+
+</div>

@@ -1,7 +1,39 @@
 ﻿
+@model GrooveyTunes.Models.Playlist
+
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Playlist";
 }
 
-<h2>Create</h2>
+<div class="container mt-4">
+
+    <h2>Create New Playlist</h2>
+
+    @using (Html.BeginForm("Create", "Playlist", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.PlaylistName, "Playlist Name")
+            @Html.TextBoxFor(m => m.PlaylistName,
+                     new { @class = "form-control", placeholder = "Enter playlist name" })
+            @Html.ValidationMessageFor(m => m.PlaylistName, "",
+                     new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.ImagePath, "Playlist Image Path")
+            @Html.TextBoxFor(m => m.ImagePath,
+                     new { @class = "form-control", placeholder = "~/Content/Images/playlist.jpg" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Playlist
+        </button>
+
+        @Html.ActionLink("Cancel", "Index", "Playlist",
+                 null, new { @class = "btn btn-secondary" })
+    }
+
+</div>
 

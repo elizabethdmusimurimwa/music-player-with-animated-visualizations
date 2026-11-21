@@ -1,7 +1,61 @@
-﻿
+﻿@model IEnumerable<GrooveyTunes.Models.Song>
+
 @{
-    ViewBag.Title = "View";
+    ViewBag.Title = "Home";
+    bool searching = !string.IsNullOrWhiteSpace((string)ViewBag.Search);
 }
 
-<h2>View</h2>
+<div class="page-head">
+    <h1>@(searching ? "Results for \"" + ViewBag.Search + "\"" : "Welcome to GrooveyTunes")</h1>
+    @if (!searching)
+    {
+        <p>Discover your favourite music, explore artists and create your own playlists.</p>
+    }
+</div>
 
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        @(searching ? "No songs match \"" + ViewBag.Search + "\"." : "No songs available yet.")
+    </div>
+}
+else
+{
+    <table class="song-table" id="songTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>#</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 1; }
+            @foreach (var s in Model)
+            {
+                var artistName = s.Artist != null ? s.Artist.ArtistName : "Unknown artist";
+                var audioUrl = string.IsNullOrEmpty(s.AudioPath) ? "" : Url.Content(s.AudioPath);
+
+                <tr>
+                    <td>
+                        <button type="button" class="play-btn play-song"
+                                data-title="@s.Title"
+                                data-artist="@artistName"
+                                data-audio="@audioUrl"
+                                title="Play">
+                            @Icons.Draw("play")
+                        </button>
+                    </td>
+                    <td class="num">@(i++)</td>
+                    <td>@s.Title</td>
+                    <td class="muted">@artistName</td>
+                    <td class="muted">@s.Album</td>
+                    <td class="muted">@TimeSpan.FromSeconds(s.Duration).ToString(@"m\:ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

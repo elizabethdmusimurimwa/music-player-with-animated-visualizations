@@ -1,64 +1,114 @@
-﻿
+﻿@{
+    string ctrl = ViewContext.RouteData.Values["controller"].ToString();
+    Func<string, string> active = c => ctrl == c ? "active" : "";
+}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>@ViewBag.Title - GroovyTunes</title>
-
-    <link rel="stylesheet"
-          href="@Url.Content("~/Content/Site.css")" />
-
+    <title>@ViewBag.Title - GrooveyTunes</title>
+    <link rel="stylesheet" href="@Url.Content("~/Content/Groovey-home.css")?v=@DateTime.Now.Ticks" />
 </head>
 
 <body>
-
     <div class="app-container">
 
-        <!-- Sidebar -->
+        <!-- Header -->
+        <header class="topbar">
 
+            <a href="@Url.Action("Index", "Home")" class="brand">♫ GrooveyTunes</a>
+
+            <div class="topbar-center">
+                <a href="@Url.Action("Index", "Home")" class="icon-tile @active("Home")" title="Home">
+                    @Icons.Draw("home")
+                </a>
+
+                <form class="search-wrap" action="@Url.Action("Search", "Home")" method="get">
+                    <input class="search" type="text" name="query"
+                           value="@Request.QueryString["query"]"
+                           placeholder="What do you want to play?" />
+                    <button type="submit" class="icon-tile" title="Search">@Icons.Draw("search")</button>
+                </form>
+            </div>
+
+            <a href="@Url.Action("Login", "Account")" class="icon-tile round" title="Login">
+                @Icons.Draw("user")
+            </a>
+
+        </header>
+
+        <!-- Side navigation -->
         <aside class="sidebar">
 
-            <h2 class="logo">♫ GroovyTunes</h2>
+            <a href="@Url.Action("Create", "Playlist")" class="icon-tile" title="New playlist">@Icons.Draw("plus")</a>
 
-            <nav>
-                <a href="@Url.Action("Index", "Home")">
-                    🏠 Home
-                </a>
+            <!-- Songs are shown on the Home page (HomeController) -->
+            <a href="@Url.Action("Index", "Home")" class="icon-tile" title="Songs">@Icons.Draw("note")</a>
 
-                <a href="@Url.Action("Index", "Playlist")">
-                    ♫ Playlists
-                </a>
+            <a href="@Url.Action("Index", "Artists")" class="icon-tile round @active("Artists")" title="Artists">@Icons.Draw("artist")</a>
 
-                <a href="@Url.Action("Index", "Artists")">
-                    🎤 Artists
-                </a>
+            <a href="@Url.Action("Index", "Genres")" class="icon-tile @active("Genres")" title="Genres">@Icons.Draw("genre")</a>
 
-                <a href="@Url.Action("Index", "Player")">
-                    ▶ Player
-                </a>
-            </nav>
+            <a href="@Url.Action("Index", "Playlist")" class="icon-tile @active("Playlist")" title="Playlists">@Icons.Draw("playlist")</a>
+
+            <!-- Opens the expanded player instead of navigating -->
+            <a href="#" id="openPlayer" class="icon-tile" title="Player">@Icons.Draw("play")</a>
 
         </aside>
 
-        <!-- Page content -->
-
+        <!-- Main area -->
         <main class="main-content">
 
-            @RenderBody()
+            <div id="pageBody">
+                @RenderBody()
+            </div>
+
+            <!-- Expanded player -->
+            <section id="expandedPlayer" hidden>
+                <button type="button" id="closePlayer" class="icon-tile" title="Back">✕</button>
+
+                <!-- Click the animation to choose another one -->
+                <div class="cover-wrap" id="coverWrap" title="Click to change the animation">
+                    <img id="bigCover" class="big-cover" alt="" />
+                    <span class="cover-hint">Click to change animation</span>
+                </div>
+
+                <h1 id="bigTitle">No song selected</h1>
+                <p id="bigArtist" class="muted">Choose a song to play</p>
+
+                <div class="big-progress">
+                    <span id="bigCurrent">0:00</span>
+                    <input type="range" id="bigSeek" min="0" max="100" value="0" step="0.1" />
+                    <span id="bigTotal">0:00</span>
+                </div>
+
+                <div class="big-controls">
+                    <button type="button" class="icon-tile round" id="bigPrev" title="Previous">⏮</button>
+                    <button type="button" class="icon-tile round big" id="bigPlay" title="Play">▶</button>
+                    <button type="button" class="icon-tile round" id="bigNext" title="Next">⏭</button>
+                </div>
+            </section>
 
         </main>
 
     </div>
 
-    <!-- Shared music player -->
+    <!-- Animation chooser (opens when the big animation is clicked) -->
+    <div id="coverModal" class="modal" hidden>
+        <div class="modal-panel" role="dialog" aria-label="Choose an animation">
+            <div class="modal-head">
+                <h2>Choose an animation</h2>
+                <button type="button" id="closeModal" class="icon-tile" title="Close">✕</button>
+            </div>
+            <div id="animGallery" class="anim-gallery"></div>
+        </div>
+    </div>
 
+    <!-- Shared music player (bottom bar) -->
     @Html.Partial("_MusicPlayer")
 
-    <script src="@Url.Content("~/Scripts/GroovyTunes.js")"></script>
-
+    <script src="@Url.Content("~/Scripts/GrooveyTunes.js")"></script>
     @RenderSection("scripts", required: false)
-
 </body>
 </html>
