@@ -8,6 +8,9 @@ namespace GrooveyTunes.Models
 {
     public class GrooveyTunesContext : DbContext
     {
+        static GrooveyTunesContext() {
+            Database.SetInitializer<GrooveyTunesContext>(null);
+        }
         public GrooveyTunesContext()
             : base("name=GroovyTunesDB")
         {
@@ -15,6 +18,7 @@ namespace GrooveyTunes.Models
 
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Song> Songs { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<PlaylistSong> PlaylistSongs { get; set; }

@@ -1,0 +1,110 @@
+﻿@model GrooveyTunes.Models.UserListViewModel
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool filtering = !string.IsNullOrWhiteSpace(Model.Search);
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>Users</h1>
+        <p class="sub">Everyone who has signed up. Promote helpers to admin, or remove accounts.</p>
+    </div>
+</div>
+
+<form method="get" action="@Url.Action("Index", "AdminUsers")" class="filters reveal" style="--i:1">
+    <div class="search-box">
+        @AdminIcons.Draw("search")
+        <input type="text" name="search" value="@Model.Search" placeholder="Search username or email" maxlength="100" />
+    </div>
+    <button type="submit" class="btn btn-ghost">Search</button>
+    @if (filtering)
+    {
+        <a class="link" href="@Url.Action("Index", "AdminUsers")">Clear</a>
+    }
+</form>
+
+<section class="table-card reveal" style="--i:2">
+    @if (!Model.Users.Any())
+    {
+        <div class="empty"><p>@(filtering ? "No users match your search." : "No users yet.")</p></div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Playlists</th>
+                        <th class="right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int n = 0; }
+                    @foreach (var u in Model.Users)
+                    {
+                        bool isMe = u.AppUserId == Model.MyId;
+                        bool isAdmin = u.Role == "Admin";
+                        bool lastAdmin = isAdmin && Model.AdminCount <= 1;
+
+                        <tr style="--i:@(n++)">
+                            <td>
+                                <div class="cell-media">
+                                    
+                                    <div>
+                                        <strong>@u.Username @if (isMe) { <span class="you">you</span> }</strong>
+                                        <small>@u.Email</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge @(isAdmin ? "badge-admin" : "badge-user")">@u.Role</span></td>
+                            <td class="muted">@u.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td class="muted">@u.PlaylistCount</td>
+                            <td class="right">
+                                @if (!isAdmin)
+                                {
+                                    <button type="button" class="icon-btn" title="Make admin"
+                                            data-post="@Url.Action("Promote", "AdminUsers", new { id = u.AppUserId })">
+                                        @AdminIcons.Draw("up")
+                                    </button>
+                                }
+                                else if (isMe || lastAdmin)
+                                {
+                                    <span class="icon-btn disabled" title="@(isMe ? "You can't remove your own admin access" : "There must always be at least one admin")">@AdminIcons.Draw("lock")</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="icon-btn" title="Remove admin access"
+                                            data-post="@Url.Action("Demote", "AdminUsers", new { id = u.AppUserId })"
+                                            data-confirm-title="Remove admin access?"
+                                            data-confirm-text="@(u.Username + " will become a regular user.")"
+                                            data-confirm-button="Yes, demote">
+                                        @AdminIcons.Draw("down")
+                                    </button>
+                                }
+
+                                @if (isMe || lastAdmin)
+                                {
+                                    <span class="icon-btn disabled" title="@(isMe ? "You can't delete your own account" : "The last admin can't be deleted")">@AdminIcons.Draw("lock")</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="icon-btn danger" title="Delete user"
+                                            data-post="@Url.Action("Delete", "AdminUsers", new { id = u.AppUserId })"
+                                            data-confirm-title="Delete this user?"
+                                            data-confirm-text="@(u.Username + " will be deleted" + (u.PlaylistCount > 0 ? " together with their " + u.PlaylistCount + (u.PlaylistCount == 1 ? " playlist" : " playlists") : "") + ". This can't be undone.")">
+                                        @AdminIcons.Draw("trash")
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @Html.Partial("_Pager", Model.Pager)
+</section>

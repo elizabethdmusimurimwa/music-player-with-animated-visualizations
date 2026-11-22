@@ -95,11 +95,14 @@
     </Reference>
   </ItemGroup>
    <ItemGroup>
+    <Content Include="Content\admin.css" />
     <Content Include="Content\auth.css" />
+    <Content Include="Content\genres.css" />
     <Content Include="Content\Groovey-home.css" />
     <Content Include="Content\Music\side-to-side.mp3" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\auth.js" />
     <Content Include="Scripts\GrooveyTunes.js" />
     <Content Include="Web.config" />
@@ -122,11 +125,35 @@
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\PlaylistSong.cs" />
     <Compile Include="Models\Song.cs" />
+    <Compile Include="Controllers\AdminArtistsController.cs" />
+    <Compile Include="Controllers\AdminBaseController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AdminGenresController.cs" />
+    <Compile Include="Controllers\AdminSongsController.cs" />
+    <Compile Include="Controllers\AdminUsersController.cs" />
+    <Compile Include="Controllers\GenresController.cs" />
+    <Compile Include="Helpers\AdminOnlyAttribute.cs" />
+    <Compile Include="Helpers\FileUploadHelper.cs" />
+    <Compile Include="Helpers\ViewHelpers.cs" />
+    <Compile Include="Models\AdminViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="App_Code\Icons.cshtml" />
+    <Content Include="App_Code\AdminIcons.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Shared\_Pager.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\AdminSongs\Index.cshtml" />
+    <Content Include="Views\AdminSongs\Form.cshtml" />
+    <Content Include="Views\AdminArtists\Index.cshtml" />
+    <Content Include="Views\AdminArtists\Form.cshtml" />
+    <Content Include="Views\AdminGenres\Index.cshtml" />
+    <Content Include="Views\AdminGenres\Form.cshtml" />
+    <Content Include="Views\AdminUsers\Index.cshtml" />
+    <Content Include="Views\Genres\Index.cshtml" />
+    <Content Include="Views\Genres\Details.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

@@ -1,0 +1,95 @@
+﻿@{
+    string ctrl = ViewContext.RouteData.Values["controller"].ToString();
+    Func<string, string> active = c => ctrl == c ? "active" : "";
+    string username = User.Identity.Name ?? "";
+    string initial = username.Length > 0 ? username.Substring(0, 1).ToUpper() : "A";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title | GrooveyTunes Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="@Url.Content("~/Content/admin.css")?v=@DateTime.Now.Ticks">
+</head>
+<body>
+    <div class="shell">
+
+        <!-- ===== Sidebar ===== -->
+        <aside class="side" id="side">
+            <div class="side-brand">
+                <span class="logo">GrooveyTunes<b>.</b></span>
+                <span class="mini-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            </div>
+            <p class="side-label">Admin</p>
+
+            <nav class="nav">
+                <a class="nav-link @active("Admin")" href="@Url.Action("Index", "Admin")">@AdminIcons.Draw("dashboard")<span>Dashboard</span></a>
+                <a class="nav-link @active("AdminSongs")" href="@Url.Action("Index", "AdminSongs")">@AdminIcons.Draw("song")<span>Songs</span></a>
+                <a class="nav-link @active("AdminArtists")" href="@Url.Action("Index", "AdminArtists")">@AdminIcons.Draw("artist")<span>Artists</span></a>
+                <a class="nav-link @active("AdminGenres")" href="@Url.Action("Index", "AdminGenres")">@AdminIcons.Draw("genre")<span>Genres</span></a>
+                <a class="nav-link @active("AdminUsers")" href="@Url.Action("Index", "AdminUsers")">@AdminIcons.Draw("users")<span>Users</span></a>
+            </nav>
+
+            <div class="side-foot">
+                <a class="nav-link" href="@Url.Action("Index", "Home")">@AdminIcons.Draw("site")<span>View site</span></a>
+                @using (Html.BeginForm("Logout", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="nav-link as-button">@AdminIcons.Draw("logout")<span>Log out</span></button>
+                }
+            </div>
+        </aside>
+        <div class="scrim" id="scrim"></div>
+
+        <!-- ===== Main ===== -->
+        <div class="main">
+            <header class="topbar">
+                <button type="button" class="icon-btn menu-btn" id="menuBtn" title="Menu">@AdminIcons.Draw("menu")</button>
+                <div class="crumbs">Admin <span>/</span> <strong>@ViewBag.Title</strong></div>
+                <div class="me">
+                    <span class="avatar">@initial</span>
+                    <span class="badge badge-admin">Admin</span>
+                </div>
+            </header>
+
+            <main class="content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== Toasts (messages from the controller) ===== -->
+    <div class="toasts" id="toasts">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast success" role="status">@AdminIcons.Draw("check")<span>@TempData["Success"]</span></div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast error" role="alert">@AdminIcons.Draw("warn")<span>@TempData["Error"]</span></div>
+        }
+    </div>
+
+    <!-- ===== Confirm dialog (filled in by admin.js) ===== -->
+    <div class="modal-bg" id="confirmModal" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+            <div class="modal-icon">@AdminIcons.Draw("warn")</div>
+            <h2 id="confirmTitle">Are you sure?</h2>
+            <p id="confirmText"></p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" id="confirmCancel">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmOk">Yes, continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buttons with a data-post attribute submit this hidden form -->
+    <form id="postForm" method="post" hidden>@Html.AntiForgeryToken()</form>
+
+    <script src="@Url.Content("~/Scripts/admin.js")?v=@DateTime.Now.Ticks"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

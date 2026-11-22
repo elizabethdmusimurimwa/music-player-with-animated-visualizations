@@ -1,0 +1,45 @@
+﻿@model GrooveyTunes.Models.PagerInfo
+@{
+    // Keep the search/filter values in the links, only the page number changes
+    var query = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+    Func<int, string> link = p =>
+    {
+        query["page"] = p.ToString();
+        return Request.Path + "?" + query.ToString();
+    };
+
+    int start = Math.Max(1, Model.Page - 2);
+    int end = Math.Min(Model.TotalPages, start + 4);
+    start = Math.Max(1, end - 4);
+}
+
+<div class="pager-bar">
+    <span class="pager-info">
+        @if (Model.TotalItems == 0)
+        {
+            <text>No results</text>
+        }
+        else
+        {
+            <text>Showing <b>@Model.FirstItem</b> to <b>@Model.LastItem</b> of <b>@Model.TotalItems</b></text>
+        }
+    </span>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="pager" aria-label="Pages">
+            @if (Model.Page > 1)
+            {
+                <a class="page-btn" href="@link(Model.Page - 1)" title="Previous">&lsaquo;</a>
+            }
+            @for (int p = start; p <= end; p++)
+            {
+                <a class="page-btn @(p == Model.Page ? "current" : "")" href="@link(p)">@p</a>
+            }
+            @if (Model.Page < Model.TotalPages)
+            {
+                <a class="page-btn" href="@link(Model.Page + 1)" title="Next">&rsaquo;</a>
+            }
+        </nav>
+    }
+</div>

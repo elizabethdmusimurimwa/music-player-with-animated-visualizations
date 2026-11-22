@@ -1,0 +1,140 @@
+﻿@model GrooveyTunes.Models.SongFormViewModel
+@using GrooveyTunes.Helpers
+@{
+    ViewBag.Title = (string)ViewBag.Heading;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool isNew = Model.SongId == 0;
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>@ViewBag.Heading</h1>
+        <p class="sub">Fields marked <span class="req">*</span> are required.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-ghost" href="@Url.Action("Index", "AdminSongs")">@AdminIcons.Draw("back") Back to songs</a>
+    </div>
+</div>
+
+@using (Html.BeginForm(isNew ? "Create" : "Edit", "AdminSongs", FormMethod.Post,
+    new { enctype = "multipart/form-data", novalidate = "novalidate", @class = "form-grid reveal", style = "--i:1", data_root = Url.Content("~/") }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.SongId)
+
+    <div class="form-card">
+        @Html.ValidationSummary(true, "", new { @class = "form-error" })
+
+        <div class="field @Html.FieldClass("Title")">
+            <label for="title">Title <span class="req">*</span></label>
+            <div class="input-wrap">
+                @Html.TextBoxFor(m => m.Title, new { id = "title", data_rule = "songTitle", placeholder = "e.g. Side To Side", maxlength = 100, autocomplete = "off" })
+            </div>
+            <div class="error">@Html.ValidationMessageFor(m => m.Title)</div>
+        </div>
+
+        <div class="two-fields">
+            <div class="field @Html.FieldClass("ArtistId")">
+                <label for="artist">Artist <span class="req">*</span></label>
+                <div class="input-wrap">
+                    @Html.DropDownListFor(m => m.ArtistId, Model.Artists, "Select an artist", new { id = "artist", data_rule = "select", data_message = "Choose an artist." })
+                </div>
+                <div class="error">@Html.ValidationMessageFor(m => m.ArtistId)</div>
+                @if (!Model.Artists.Any())
+                {
+                    <p class="hint">No artists yet. <a class="link" href="@Url.Action("Create", "AdminArtists")">Add an artist first</a>.</p>
+                }
+            </div>
+
+            <div class="field @Html.FieldClass("GenreId")">
+                <label for="genre">Genre <span class="req">*</span></label>
+                <div class="input-wrap">
+                    @Html.DropDownListFor(m => m.GenreId, Model.Genres, "Select a genre", new { id = "genre", data_rule = "select", data_message = "Choose a genre." })
+                </div>
+                <div class="error">@Html.ValidationMessageFor(m => m.GenreId)</div>
+                @if (!Model.Genres.Any())
+                {
+                    <p class="hint">No genres yet. <a class="link" href="@Url.Action("Create", "AdminGenres")">Add a genre first</a>.</p>
+                }
+            </div>
+        </div>
+
+        <div class="field @Html.FieldClass("Album")">
+            <label for="album">Album</label>
+            <div class="input-wrap">
+                @Html.TextBoxFor(m => m.Album, new { id = "album", data_rule = "album", placeholder = "Optional", maxlength = 100, autocomplete = "off" })
+            </div>
+            <div class="error">@Html.ValidationMessageFor(m => m.Album)</div>
+        </div>
+
+        <!-- Audio: upload a file OR type a path / link -->
+        <fieldset class="group">
+            <legend>Audio source <span class="req">*</span></legend>
+
+            <div class="field @Html.FieldClass("AudioFile")">
+                <label for="audioFile">Upload a file (mp3, wav, ogg, m4a, up to 25 MB)</label>
+                <div class="input-wrap">
+                    <input type="file" id="audioFile" name="AudioFile" accept=".mp3,.wav,.ogg,.m4a,audio/*" data-rule="audioFile" data-recheck="audioPath" />
+                </div>
+                <div class="error">@Html.ValidationMessage("AudioFile")</div>
+            </div>
+
+            <div class="or"><span>or</span></div>
+
+            <div class="field @Html.FieldClass("AudioPath")">
+                <label for="audioPath">Path or link</label>
+                <div class="input-wrap">
+                    @Html.TextBoxFor(m => m.AudioPath, new { id = "audioPath", data_rule = "audioPath", placeholder = "~/Content/Music/song.mp3  or  https://...", autocomplete = "off" })
+                </div>
+                <div class="error">@Html.ValidationMessageFor(m => m.AudioPath)</div>
+            </div>
+        </fieldset>
+
+        <div class="field @Html.FieldClass("Duration")">
+            <label for="duration">Length in seconds <small class="muted">(filled in automatically for uploads)</small></label>
+            <div class="input-wrap has-suffix">
+                @Html.TextBoxFor(m => m.Duration, new { id = "duration", data_rule = "duration", placeholder = "e.g. 226", inputmode = "numeric", autocomplete = "off" })
+                <span class="suffix" id="durationPreview">0:00</span>
+            </div>
+            <div class="error">@Html.ValidationMessageFor(m => m.Duration)</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn" id="submitBtn">@(isNew ? "Add song" : "Save changes")</button>
+            <a class="btn btn-ghost" href="@Url.Action("Index", "AdminSongs")">Cancel</a>
+        </div>
+    </div>
+
+    <!-- Right column: live previews -->
+    <aside class="form-side">
+        <div class="preview-card">
+            <p class="side-title">Cover art <small class="muted">(optional)</small></p>
+            <div class="cover-preview" id="coverBox">
+                <img id="coverPreview" alt="" hidden />
+                <span class="cover-empty" id="coverEmpty">@AdminIcons.Draw("song")</span>
+            </div>
+
+            <div class="field @Html.FieldClass("ImageFile")">
+                <label for="imageFile">Upload an image (jpg, png, webp, gif, up to 3 MB)</label>
+                <div class="input-wrap">
+                    <input type="file" id="imageFile" name="ImageFile" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" data-rule="imageFile" />
+                </div>
+                <div class="error">@Html.ValidationMessage("ImageFile")</div>
+            </div>
+
+            <div class="field @Html.FieldClass("ImagePath")">
+                <label for="imagePath">or image path / link</label>
+                <div class="input-wrap">
+                    @Html.TextBoxFor(m => m.ImagePath, new { id = "imagePath", data_rule = "pathOrUrl", placeholder = "~/Content/Images/cover.jpg", autocomplete = "off" })
+                </div>
+                <div class="error">@Html.ValidationMessageFor(m => m.ImagePath)</div>
+            </div>
+        </div>
+
+        <div class="preview-card">
+            <p class="side-title">Audio preview</p>
+            <audio id="audioPreview" controls preload="metadata"></audio>
+            <p class="hint" id="audioHint">Choose a file or enter a link to listen before saving.</p>
+        </div>
+    </aside>
+}

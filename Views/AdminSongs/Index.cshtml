@@ -1,0 +1,98 @@
+﻿@model GrooveyTunes.Models.SongListViewModel
+@{
+    ViewBag.Title = "Songs";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool filtering = !string.IsNullOrWhiteSpace(Model.Search) || Model.ArtistId.HasValue || Model.GenreId.HasValue;
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>Songs</h1>
+        <p class="sub">Add, edit and remove the songs people can play.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn" href="@Url.Action("Create", "AdminSongs")">@AdminIcons.Draw("plus") Add song</a>
+    </div>
+</div>
+
+<form method="get" action="@Url.Action("Index", "AdminSongs")" class="filters reveal" style="--i:1">
+    <div class="search-box">
+        @AdminIcons.Draw("search")
+        <input type="text" name="search" value="@Model.Search" placeholder="Search title, album or artist" maxlength="100" />
+    </div>
+    @Html.DropDownList("artistId", Model.Artists, "All artists", new { data_autosubmit = "true" })
+    @Html.DropDownList("genreId", Model.Genres, "All genres", new { data_autosubmit = "true" })
+    <button type="submit" class="btn btn-ghost">Search</button>
+    @if (filtering)
+    {
+        <a class="link" href="@Url.Action("Index", "AdminSongs")">Clear</a>
+    }
+</form>
+
+<section class="table-card reveal" style="--i:2">
+    @if (!Model.Songs.Any())
+    {
+        <div class="empty">
+            <p>@(filtering ? "No songs match your search." : "No songs yet.")</p>
+            @if (!filtering)
+            {
+                <a class="btn" href="@Url.Action("Create", "AdminSongs")">@AdminIcons.Draw("plus") Add the first song</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Song</th>
+                        <th>Artist</th>
+                        <th>Genre</th>
+                        <th>Length</th>
+                        <th class="right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int n = 0; }
+                    @foreach (var s in Model.Songs)
+                    {
+                        <tr style="--i:@(n++)">
+                            <td>
+                                <div class="cell-media">
+                                    <span class="thumb">
+                                        @if (!string.IsNullOrEmpty(s.ImagePath))
+                                        {
+                                            <img src="@Url.Content(s.ImagePath)" alt="" />
+                                        }
+                                        else
+                                        {
+                                            @AdminIcons.Draw("song")
+                                        }
+                                    </span>
+                                    <div>
+                                        <strong>@s.Title</strong>
+                                        <small>@(string.IsNullOrEmpty(s.Album) ? "No album" : s.Album)</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@s.ArtistName</td>
+                            <td><span class="chip">@s.GenreName</span></td>
+                            <td class="muted">@(s.Duration > 0 ? TimeSpan.FromSeconds(s.Duration).ToString(@"m\:ss") : "-")</td>
+                            <td class="right">
+                                <a class="icon-btn" href="@Url.Action("Edit", "AdminSongs", new { id = s.SongId })" title="Edit">@AdminIcons.Draw("edit")</a>
+                                <button type="button" class="icon-btn danger" title="Delete"
+                                        data-post="@Url.Action("Delete", "AdminSongs", new { id = s.SongId })"
+                                        data-confirm-title="Delete this song?"
+                                        data-confirm-text="@("\"" + s.Title + "\" will be deleted" + (s.PlaylistCount > 0 ? " and removed from " + s.PlaylistCount + (s.PlaylistCount == 1 ? " playlist" : " playlists") : "") + ". This can't be undone.")">
+                                    @AdminIcons.Draw("trash")
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @Html.Partial("_Pager", Model.Pager)
+</section>

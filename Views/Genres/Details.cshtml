@@ -1,0 +1,58 @@
+﻿@model GrooveyTunes.Models.GenreDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Genre.GenreName;
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/genres.css")?v=@DateTime.Now.Ticks" />
+
+<div class="genre-hero">
+    <a class="genre-back" href="@Url.Action("Index", "Genres")">&larr; All genres</a>
+    <h1>@Model.Genre.GenreName</h1>
+    <p>@Model.Songs.Count @(Model.Songs.Count == 1 ? "song" : "songs")</p>
+</div>
+
+@if (!Model.Songs.Any())
+{
+    <div class="empty-state">No songs in this genre yet.</div>
+}
+else
+{
+    <table class="song-table" id="songTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>#</th>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int n = 1; }
+            @foreach (var s in Model.Songs)
+            {
+                var artistName = s.Artist != null ? s.Artist.ArtistName : "Unknown artist";
+                var audioUrl = string.IsNullOrEmpty(s.AudioPath) ? "" : Url.Content(s.AudioPath);
+
+                <tr>
+                    <td>
+                        <button type="button" class="play-btn play-song"
+                                data-title="@s.Title"
+                                data-artist="@artistName"
+                                data-audio="@audioUrl"
+                                title="Play">
+                            @Icons.Draw("play")
+                        </button>
+                    </td>
+                    <td class="num">@(n++)</td>
+                    <td>@s.Title</td>
+                    <td class="muted">@artistName</td>
+                    <td class="muted">@s.Album</td>
+                    <td class="muted">@TimeSpan.FromSeconds(s.Duration).ToString(@"m\:ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

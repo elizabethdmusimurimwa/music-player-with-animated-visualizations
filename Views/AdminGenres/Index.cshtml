@@ -1,0 +1,91 @@
+﻿@model GrooveyTunes.Models.GenreListViewModel
+@{
+    ViewBag.Title = "Genres";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool filtering = !string.IsNullOrWhiteSpace(Model.Search);
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>Genres</h1>
+        <p class="sub">Group songs so listeners can browse by mood.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn" href="@Url.Action("Create", "AdminGenres")">@AdminIcons.Draw("plus") Add genre</a>
+    </div>
+</div>
+
+<form method="get" action="@Url.Action("Index", "AdminGenres")" class="filters reveal" style="--i:1">
+    <div class="search-box">
+        @AdminIcons.Draw("search")
+        <input type="text" name="search" value="@Model.Search" placeholder="Search genres" maxlength="40" />
+    </div>
+    <button type="submit" class="btn btn-ghost">Search</button>
+    @if (filtering)
+    {
+        <a class="link" href="@Url.Action("Index", "AdminGenres")">Clear</a>
+    }
+</form>
+
+<section class="table-card reveal" style="--i:2">
+    @if (!Model.Genres.Any())
+    {
+        <div class="empty">
+            <p>@(filtering ? "No genres match your search." : "No genres yet.")</p>
+            @if (!filtering)
+            {
+                <a class="btn" href="@Url.Action("Create", "AdminGenres")">@AdminIcons.Draw("plus") Add the first genre</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Genre</th>
+                        <th>Songs</th>
+                        <th class="right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int n = 0; }
+                    @foreach (var g in Model.Genres)
+                    {
+                        <tr style="--i:@(n++)">
+                            <td><strong>@g.GenreName</strong></td>
+                            <td>
+                                @if (g.SongCount > 0)
+                                {
+                                    <a class="chip chip-link" href="@Url.Action("Index", "AdminSongs", new { genreId = g.GenreId })" title="See these songs">@g.SongCount @(g.SongCount == 1 ? "song" : "songs")</a>
+                                }
+                                else
+                                {
+                                    <span class="muted">No songs</span>
+                                }
+                            </td>
+                            <td class="right">
+                                <a class="icon-btn" href="@Url.Action("Edit", "AdminGenres", new { id = g.GenreId })" title="Edit">@AdminIcons.Draw("edit")</a>
+                                @if (g.SongCount > 0)
+                                {
+                                    <span class="icon-btn disabled" title="Move or delete its songs first">@AdminIcons.Draw("lock")</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="icon-btn danger" title="Delete"
+                                            data-post="@Url.Action("Delete", "AdminGenres", new { id = g.GenreId })"
+                                            data-confirm-title="Delete this genre?"
+                                            data-confirm-text="@(g.GenreName + " will be deleted. This can't be undone.")">
+                                        @AdminIcons.Draw("trash")
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @Html.Partial("_Pager", Model.Pager)
+</section>

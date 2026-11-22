@@ -1,0 +1,118 @@
+﻿@model GrooveyTunes.Models.DashboardViewModel
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int maxGenre = Model.TopGenres.Any() ? Math.Max(1, Model.TopGenres.Max(g => g.SongCount)) : 1;
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="sub">A quick look at everything in GrooveyTunes.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn" href="@Url.Action("Create", "AdminSongs")">@AdminIcons.Draw("plus") Add song</a>
+    </div>
+</div>
+
+<!-- Stat cards: each number counts up when the page opens -->
+<section class="stats">
+    <a class="stat reveal" style="--i:1; --accent:var(--amber)" href="@Url.Action("Index", "AdminSongs")">
+        <span class="stat-icon">@AdminIcons.Draw("song")</span>
+        <span class="stat-num" data-count="@Model.SongCount">0</span>
+        <span class="stat-label">Songs</span>
+    </a>
+    <a class="stat reveal" style="--i:2; --accent:var(--ember)" href="@Url.Action("Index", "AdminArtists")">
+        <span class="stat-icon">@AdminIcons.Draw("artist")</span>
+        <span class="stat-num" data-count="@Model.ArtistCount">0</span>
+        <span class="stat-label">Artists</span>
+    </a>
+    <a class="stat reveal" style="--i:3; --accent:var(--amber)" href="@Url.Action("Index", "AdminGenres")">
+        <span class="stat-icon">@AdminIcons.Draw("genre")</span>
+        <span class="stat-num" data-count="@Model.GenreCount">0</span>
+        <span class="stat-label">Genres</span>
+    </a>
+    <a class="stat reveal" style="--i:4; --accent:var(--ember)" href="@Url.Action("Index", "AdminUsers")">
+        <span class="stat-icon">@AdminIcons.Draw("users")</span>
+        <span class="stat-num" data-count="@Model.UserCount">0</span>
+        <span class="stat-label">Users</span>
+    </a>
+    <div class="stat reveal" style="--i:5; --accent:var(--amber)">
+        <span class="stat-icon">@AdminIcons.Draw("playlist")</span>
+        <span class="stat-num" data-count="@Model.PlaylistCount">0</span>
+        <span class="stat-label">Playlists</span>
+    </div>
+</section>
+
+<div class="two-col">
+
+    <!-- Recently added songs -->
+    <section class="panel reveal" style="--i:6">
+        <div class="panel-head">
+            <h2>Recently added songs</h2>
+            <a class="link" href="@Url.Action("Index", "AdminSongs")">View all</a>
+        </div>
+
+        @if (!Model.Recent.Any())
+        {
+            <div class="empty">
+                <p>No songs yet.</p>
+                <a class="btn" href="@Url.Action("Create", "AdminSongs")">@AdminIcons.Draw("plus") Add the first song</a>
+            </div>
+        }
+        else
+        {
+            <ul class="recent">
+                @foreach (var s in Model.Recent)
+                {
+                    <li>
+                        <span class="thumb">
+                            @if (!string.IsNullOrEmpty(s.ImagePath))
+                            {
+                                <img src="@Url.Content(s.ImagePath)" alt="" />
+                            }
+                            else
+                            {
+                                @AdminIcons.Draw("song")
+                            }
+                        </span>
+                        <span class="recent-text">
+                            <strong>@s.Title</strong>
+                            <small>@s.ArtistName</small>
+                        </span>
+                        <span class="chip">@s.GenreName</span>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <!-- Songs per genre -->
+    <section class="panel reveal" style="--i:7">
+        <div class="panel-head">
+            <h2>Songs by genre</h2>
+            <a class="link" href="@Url.Action("Index", "AdminGenres")">Manage</a>
+        </div>
+
+        @if (!Model.TopGenres.Any())
+        {
+            <div class="empty">
+                <p>No genres yet.</p>
+                <a class="btn" href="@Url.Action("Create", "AdminGenres")">@AdminIcons.Draw("plus") Add a genre</a>
+            </div>
+        }
+        else
+        {
+            <ul class="bars">
+                @foreach (var g in Model.TopGenres)
+                {
+                    <li>
+                        <div class="bar-label"><span>@g.GenreName</span><b>@g.SongCount</b></div>
+                        <div class="bar-track"><div class="bar-fill" style="--w:@((g.SongCount * 100) / maxGenre)%"></div></div>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+</div>

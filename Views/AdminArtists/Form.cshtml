@@ -1,0 +1,76 @@
+﻿@model GrooveyTunes.Models.ArtistFormViewModel
+@using GrooveyTunes.Helpers
+@{
+    ViewBag.Title = (string)ViewBag.Heading;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool isNew = Model.ArtistId == 0;
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>@ViewBag.Heading</h1>
+        <p class="sub">Fields marked <span class="req">*</span> are required.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-ghost" href="@Url.Action("Index", "AdminArtists")">@AdminIcons.Draw("back") Back to artists</a>
+    </div>
+</div>
+
+@using (Html.BeginForm(isNew ? "Create" : "Edit", "AdminArtists", FormMethod.Post,
+    new { enctype = "multipart/form-data", novalidate = "novalidate", @class = "form-grid reveal", style = "--i:1", data_root = Url.Content("~/") }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ArtistId)
+
+    <div class="form-card">
+        @Html.ValidationSummary(true, "", new { @class = "form-error" })
+
+        <div class="field @Html.FieldClass("ArtistName")">
+            <label for="name">Name <span class="req">*</span></label>
+            <div class="input-wrap">
+                @Html.TextBoxFor(m => m.ArtistName, new { id = "name", data_rule = "artistName", placeholder = "e.g. Ariana Grande", maxlength = 100, autocomplete = "off" })
+            </div>
+            <div class="error">@Html.ValidationMessageFor(m => m.ArtistName)</div>
+        </div>
+
+        <div class="field @Html.FieldClass("Biography")">
+            <label for="bio">Biography</label>
+            <div class="input-wrap">
+                @Html.TextAreaFor(m => m.Biography, 7, 40, new { id = "bio", data_rule = "biography", placeholder = "A few lines about the artist (optional)", maxlength = 2000 })
+            </div>
+            <div class="counter" id="bioCounter">0 / 2000</div>
+            <div class="error">@Html.ValidationMessageFor(m => m.Biography)</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn" id="submitBtn">@(isNew ? "Add artist" : "Save changes")</button>
+            <a class="btn btn-ghost" href="@Url.Action("Index", "AdminArtists")">Cancel</a>
+        </div>
+    </div>
+
+    <aside class="form-side">
+        <div class="preview-card">
+            <p class="side-title">Artist photo <small class="muted">(optional)</small></p>
+            <div class="cover-preview round" id="coverBox">
+                <img id="coverPreview" alt="" hidden />
+                <span class="cover-empty" id="coverEmpty">@AdminIcons.Draw("artist")</span>
+            </div>
+
+            <div class="field @Html.FieldClass("ImageFile")">
+                <label for="imageFile">Upload an image (jpg, png, webp, gif, up to 3 MB)</label>
+                <div class="input-wrap">
+                    <input type="file" id="imageFile" name="ImageFile" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" data-rule="imageFile" />
+                </div>
+                <div class="error">@Html.ValidationMessage("ImageFile")</div>
+            </div>
+
+            <div class="field @Html.FieldClass("ImagePath")">
+                <label for="imagePath">or image path / link</label>
+                <div class="input-wrap">
+                    @Html.TextBoxFor(m => m.ImagePath, new { id = "imagePath", data_rule = "pathOrUrl", placeholder = "~/Content/Images/artist.jpg", autocomplete = "off" })
+                </div>
+                <div class="error">@Html.ValidationMessageFor(m => m.ImagePath)</div>
+            </div>
+        </div>
+    </aside>
+}

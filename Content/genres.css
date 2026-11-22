@@ -1,0 +1,185 @@
+﻿/* Public Genres page. Sits inside the site layout and re-uses its colour variables. */
+
+.genre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 18px;
+    margin-top: 8px;
+}
+
+.genre-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 150px;
+    padding: 20px;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1.5px solid transparent;
+    color: #1f1e22;
+    animation: genre-rise .6s cubic-bezier(.22, .8, .3, 1) both;
+    animation-delay: calc(var(--i, 0) * 60ms);
+    transition: transform .3s cubic-bezier(.22, .8, .3, 1), box-shadow .35s, border-color .35s;
+}
+
+    /* Four colours taken from the project palette */
+    .genre-tile.tone-0 {
+        --glow: 255, 176, 55;
+        background: linear-gradient(135deg, #ffb037, #e8863a);
+    }
+
+    .genre-tile.tone-1 {
+        --glow: 216, 85, 53;
+        background: linear-gradient(135deg, #e8863a, #d85535);
+    }
+
+    .genre-tile.tone-2 {
+        --glow: 255, 176, 55;
+        color: #f3f1ee;
+        background: linear-gradient(135deg, #4e4d52, #2f2e33);
+        border-color: rgba(255, 176, 55, .45);
+    }
+
+    .genre-tile.tone-3 {
+        --glow: 216, 85, 53;
+        color: #f3f1ee;
+        background: linear-gradient(135deg, #3e3d42, #28272c);
+        border-color: rgba(216, 85, 53, .5);
+    }
+
+    .genre-tile:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 0 10px rgba(var(--glow), .7), 0 0 32px rgba(var(--glow), .45);
+    }
+
+.genre-name {
+    position: relative;
+    z-index: 1;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.genre-count {
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
+    font-size: .82rem;
+    opacity: .8;
+}
+
+/* Little equalizer in the corner that wakes up on hover */
+.genre-eq {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 26px;
+    opacity: .55;
+}
+
+    .genre-eq i {
+        width: 4px;
+        height: 100%;
+        border-radius: 2px;
+        background: currentColor;
+        transform: scaleY(.3);
+        transform-origin: bottom;
+        transition: opacity .3s;
+    }
+
+.genre-tile:hover .genre-eq {
+    opacity: 1;
+}
+
+    .genre-tile:hover .genre-eq i {
+        animation: genre-bounce 1s ease-in-out infinite;
+    }
+
+        .genre-tile:hover .genre-eq i:nth-child(2) {
+            animation-delay: -.3s;
+            animation-duration: 1.3s;
+        }
+
+        .genre-tile:hover .genre-eq i:nth-child(3) {
+            animation-delay: -.7s;
+            animation-duration: .8s;
+        }
+
+        .genre-tile:hover .genre-eq i:nth-child(4) {
+            animation-delay: -.5s;
+        }
+
+        .genre-tile:hover .genre-eq i:nth-child(5) {
+            animation-delay: -.2s;
+            animation-duration: 1.2s;
+        }
+
+@keyframes genre-bounce {
+    0%, 100% {
+        transform: scaleY(.25);
+    }
+
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes genre-rise {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ----- Genre details page ----- */
+.genre-hero {
+    margin-bottom: 24px;
+    padding: 26px 28px;
+    border-radius: 16px;
+    background: radial-gradient(circle at 90% 0%, rgba(255, 176, 55, .22), transparent 55%), radial-gradient(circle at 0% 100%, rgba(216, 85, 53, .22), transparent 55%), rgba(0, 0, 0, .22);
+    border: 1px solid rgba(255, 176, 55, .35);
+    box-shadow: 0 0 24px rgba(255, 176, 55, .15);
+    animation: genre-rise .5s cubic-bezier(.22, .8, .3, 1) both;
+}
+
+    .genre-hero h1 {
+        margin: 10px 0 4px;
+        font-size: 2.2rem;
+        color: #ffb037;
+        text-shadow: 0 0 14px rgba(255, 176, 55, .55);
+    }
+
+    .genre-hero p {
+        margin: 0;
+        color: #d0d0d0;
+    }
+
+.genre-back {
+    font-size: .85rem;
+    color: #d0d0d0;
+    transition: color .2s;
+}
+
+    .genre-back:hover {
+        color: #ffb037;
+    }
+
+@media (prefers-reduced-motion: reduce) {
+    .genre-tile, .genre-hero {
+        animation: none;
+    }
+
+        .genre-tile:hover .genre-eq i {
+            animation: none;
+        }
+}

@@ -54,6 +54,11 @@ namespace GrooveyTunes.Controllers
             {
                 return Redirect(returnUrl);
             }
+            // Admins land on the dashboard, everyone else on the home page
+            if (user.Role == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
             return RedirectToAction("Index", "Home");
         }
 

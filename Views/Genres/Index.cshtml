@@ -1,0 +1,35 @@
+﻿@model IEnumerable<GrooveyTunes.Models.GenreRow>
+
+@{
+    ViewBag.Title = "Genres";
+    int i = 0;
+}
+
+<link rel="stylesheet" href="@Url.Content("~/Content/genres.css")?v=@DateTime.Now.Ticks" />
+
+<div class="page-head">
+    <h1>Genres</h1>
+    <p>Pick a vibe and start listening.</p>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No genres have been added yet.</div>
+}
+else
+{
+    <div class="genre-grid">
+        @foreach (var g in Model)
+        {
+            int tone = i % 4;
+            int step = i;
+            i++;
+
+            <a class="genre-tile tone-@tone" style="--i:@step" href="@Url.Action("Details", "Genres", new { id = g.GenreId })">
+                <span class="genre-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                <span class="genre-name">@g.GenreName</span>
+                <span class="genre-count">@g.SongCount @(g.SongCount == 1 ? "song" : "songs")</span>
+            </a>
+        }
+    </div>
+}

@@ -1,0 +1,50 @@
+﻿@model GrooveyTunes.Models.GenreFormViewModel
+@using GrooveyTunes.Helpers
+@{
+    ViewBag.Title = (string)ViewBag.Heading;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool isNew = Model.GenreId == 0;
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>@ViewBag.Heading</h1>
+        <p class="sub">Fields marked <span class="req">*</span> are required.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-ghost" href="@Url.Action("Index", "AdminGenres")">@AdminIcons.Draw("back") Back to genres</a>
+    </div>
+</div>
+
+@using (Html.BeginForm(isNew ? "Create" : "Edit", "AdminGenres", FormMethod.Post,
+    new { novalidate = "novalidate", @class = "form-grid reveal", style = "--i:1" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.GenreId)
+
+    <div class="form-card">
+        @Html.ValidationSummary(true, "", new { @class = "form-error" })
+
+        <div class="field @Html.FieldClass("GenreName")">
+            <label for="genreName">Genre name <span class="req">*</span></label>
+            <div class="input-wrap">
+                @Html.TextBoxFor(m => m.GenreName, new { id = "genreName", data_rule = "genreName", placeholder = "e.g. Hip Hop", maxlength = 40, autocomplete = "off" })
+            </div>
+            <div class="counter" id="nameCounter">0 / 40</div>
+            <div class="error">@Html.ValidationMessageFor(m => m.GenreName)</div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn" id="submitBtn">@(isNew ? "Add genre" : "Save changes")</button>
+            <a class="btn btn-ghost" href="@Url.Action("Index", "AdminGenres")">Cancel</a>
+        </div>
+    </div>
+
+    <aside class="form-side">
+        <div class="preview-card">
+            <p class="side-title">How it will look</p>
+            <div class="genre-demo" id="genreDemo">@(string.IsNullOrWhiteSpace(Model.GenreName) ? "Your genre" : Model.GenreName)</div>
+            <p class="hint">Letters, numbers, spaces and &amp; ' - / are allowed.</p>
+        </div>
+    </aside>
+}

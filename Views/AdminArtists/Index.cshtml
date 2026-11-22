@@ -1,0 +1,96 @@
+﻿@model GrooveyTunes.Models.ArtistListViewModel
+@{
+    ViewBag.Title = "Artists";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    bool filtering = !string.IsNullOrWhiteSpace(Model.Search);
+}
+
+<div class="page-head reveal">
+    <div>
+        <h1>Artists</h1>
+        <p class="sub">The people and bands behind the songs.</p>
+    </div>
+    <div class="head-actions">
+        <a class="btn" href="@Url.Action("Create", "AdminArtists")">@AdminIcons.Draw("plus") Add artist</a>
+    </div>
+</div>
+
+<form method="get" action="@Url.Action("Index", "AdminArtists")" class="filters reveal" style="--i:1">
+    <div class="search-box">
+        @AdminIcons.Draw("search")
+        <input type="text" name="search" value="@Model.Search" placeholder="Search artists" maxlength="100" />
+    </div>
+    <button type="submit" class="btn btn-ghost">Search</button>
+    @if (filtering)
+    {
+        <a class="link" href="@Url.Action("Index", "AdminArtists")">Clear</a>
+    }
+</form>
+
+<section class="table-card reveal" style="--i:2">
+    @if (!Model.Artists.Any())
+    {
+        <div class="empty">
+            <p>@(filtering ? "No artists match your search." : "No artists yet.")</p>
+            @if (!filtering)
+            {
+                <a class="btn" href="@Url.Action("Create", "AdminArtists")">@AdminIcons.Draw("plus") Add the first artist</a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Artist</th>
+                        <th>Songs</th>
+                        <th class="right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int n = 0; }
+                    @foreach (var a in Model.Artists)
+                    {
+                        <tr style="--i:@(n++)">
+                            <td>
+                                <div class="cell-media">
+                                    <span class="thumb round">
+                                        @if (!string.IsNullOrEmpty(a.ImagePath))
+                                        {
+                                            <img src="@Url.Content(a.ImagePath)" alt="" />
+                                        }
+                                        else
+                                        {
+                                            @AdminIcons.Draw("artist")
+                                        }
+                                    </span>
+                                    <strong>@a.ArtistName</strong>
+                                </div>
+                            </td>
+                            <td><span class="chip">@a.SongCount @(a.SongCount == 1 ? "song" : "songs")</span></td>
+                            <td class="right">
+                                <a class="icon-btn" href="@Url.Action("Edit", "AdminArtists", new { id = a.ArtistId })" title="Edit">@AdminIcons.Draw("edit")</a>
+                                @if (a.SongCount > 0)
+                                {
+                                    <span class="icon-btn disabled" title="Delete this artist's songs first">@AdminIcons.Draw("lock")</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="icon-btn danger" title="Delete"
+                                            data-post="@Url.Action("Delete", "AdminArtists", new { id = a.ArtistId })"
+                                            data-confirm-title="Delete this artist?"
+                                            data-confirm-text="@(a.ArtistName + " will be deleted. This can't be undone.")">
+                                        @AdminIcons.Draw("trash")
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @Html.Partial("_Pager", Model.Pager)
+</section>
