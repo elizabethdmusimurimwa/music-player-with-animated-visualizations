@@ -108,7 +108,7 @@
     <!-- Shared music player (bottom bar) -->
     @Html.Partial("_MusicPlayer")
 
-    <script src="@Url.Content("~/Scripts/GrooveyTunes.js")"></script>
+<script src="@Url.Content("~/Scripts/GrooveyTunes.js")?v=@DateTime.Now.Ticks"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

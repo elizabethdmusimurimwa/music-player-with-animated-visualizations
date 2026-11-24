@@ -35,33 +35,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // =========================================================
-    //  Song queue (every .play-song button on the page)
+    //  Song queue
+    //  The queue is remembered, so Next / Previous keep working
+    //  even after you move to a different page.
     // =========================================================
-    const songs = Array.from(document.querySelectorAll(".play-song"));
+    let queue = [];          // [{ title, artist, audio }]
     let currentIndex = -1;
 
+    function toItem(button) {
+        return {
+            title: button.dataset.title || "Unknown title",
+            artist: button.dataset.artist || "",
+            audio: button.dataset.audio || ""
+        };
+    }
+
+    function readQueueFromPage() {
+        return Array.from(document.querySelectorAll(".play-song")).map(toItem);
+    }
+
+    // Highlight the row of the song that is playing (if it is on this page)
+    function highlightPlaying() {
+        const cur = queue[currentIndex];
+        document.querySelectorAll(".play-song").forEach(function (b) {
+            const row = b.closest("tr");
+            if (row) row.classList.toggle("playing", !!cur && b.dataset.audio === cur.audio);
+        });
+    }
+
     function loadSong(index) {
-        if (songs.length === 0) return;
+        if (queue.length === 0) queue = readQueueFromPage();
+        if (queue.length === 0) return;
 
-        index = (index + songs.length) % songs.length;
-        const song = songs[index];
-        const src = song.dataset.audio;
+        index = (index + queue.length) % queue.length;
+        const song = queue[index];
 
-        if (!src) {
+        if (!song.audio) {
             alert("Audio file not available for this song.");
             return;
         }
 
         currentIndex = index;
-
-        // Highlight the playing row
-        songs.forEach(function (b) {
-            const row = b.closest("tr");
-            if (row) row.classList.toggle("playing", b === song);
-        });
-
-        audio.src = src;
-        setInfo(song.dataset.title || "Unknown title", song.dataset.artist || "");
+        audio.src = song.audio;
+        setInfo(song.title, song.artist);
+        highlightPlaying();
 
         progressBar.value = 0;
         bigSeek.value = 0;
@@ -75,10 +92,22 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    songs.forEach(function (button, index) {
-        button.addEventListener("click", function () { loadSong(index); });
-        const row = button.closest("tr");
-        if (row) row.addEventListener("dblclick", function () { loadSong(index); });
+    // Clicking a play button builds the queue from the songs on the current page.
+    // (Delegated, so it keeps working after a page is swapped in.)
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".play-song");
+        if (!btn) return;
+        const buttons = Array.from(document.querySelectorAll(".play-song"));
+        queue = buttons.map(toItem);
+        loadSong(buttons.indexOf(btn));
+    });
+
+    // Double-clicking a row plays it
+    document.addEventListener("dblclick", function (e) {
+        if (e.target.closest(".play-btn")) return;
+        const row = e.target.closest("tr");
+        const btn = row && row.querySelector(".play-song");
+        if (btn) btn.click();
     });
 
     // =========================================================
@@ -86,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // =========================================================
     function togglePlay() {
         if (!audio.getAttribute("src")) {
-            if (songs.length > 0) loadSong(0);
+            loadSong(0);
             return;
         }
         if (audio.paused) {
@@ -206,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
             name: "Spongebob",
-            url: "https://media1.tenor.com/m/NMFzSC2hCpsAAAAC/spongebob-squarepants-dance.gif"
+            url: "https://media1.tenor.com/m/NMFzSC2hCpsAAAAd/spongebob-squarepants-dance.gif"
         },
         {
             name: "Sailor Moon",
@@ -272,6 +301,125 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape" && !modal.hidden) closeModal();
     });
+
+    // =========================================================
+    //  Page navigation WITHOUT reloading, so the music keeps playing.
+    //  Only the main area is swapped; the player stays alive.
+    // =========================================================
+    const mainScroll = document.querySelector(".main-content");
+
+    // Pages that use a different layout need a normal full page load
+    const FULL_LOAD = /^\/(admin|account)/i;
+
+    function isInPageLink(a) {
+        if (!a || !a.getAttribute("href")) return false;
+        if (a.target && a.target !== "_self") return false;
+        if (a.hasAttribute("download")) return false;
+        if (a.getAttribute("href") === "#") return false;
+
+        const url = new URL(a.href, location.href);
+        if (url.origin !== location.origin) return false;
+        if (url.pathname === location.pathname && url.search === location.search && url.hash) return false;
+        if (FULL_LOAD.test(url.pathname)) return false;
+        return true;
+    }
+
+    function addNewStyles(doc) {
+        doc.querySelectorAll('link[rel="stylesheet"]').forEach(function (link) {
+            const path = new URL(link.href, location.href).pathname;
+            const exists = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).some(function (l) {
+                return new URL(l.href, location.href).pathname === path;
+            });
+            if (!exists) document.head.appendChild(link.cloneNode(true));
+        });
+    }
+
+    function runPageScripts(doc) {
+        doc.body.querySelectorAll("script").forEach(function (old) {
+            const src = old.getAttribute("src");
+            if (src && /GrooveyTunes\.js/i.test(src)) return;    // never load this file twice
+
+            if (src) {
+                const already = Array.from(document.scripts).some(function (s) {
+                    return s.getAttribute("src") === src;
+                });
+                if (already) return;
+            }
+
+            const s = document.createElement("script");
+            if (src) s.src = src; else s.textContent = old.textContent;
+            document.body.appendChild(s);
+            if (!src) s.remove();
+        });
+    }
+
+    function syncChrome(doc) {
+        // Highlighted icons
+        const sel = ".topbar a.icon-tile, .sidebar a.icon-tile";
+        const now = document.querySelectorAll(sel);
+        const next = doc.querySelectorAll(sel);
+        now.forEach(function (a, i) {
+            if (next[i]) a.classList.toggle("active", next[i].classList.contains("active"));
+        });
+
+        // Search box text
+        const mine = document.querySelector(".search");
+        const theirs = doc.querySelector(".search");
+        if (mine && theirs) mine.value = theirs.getAttribute("value") || "";
+    }
+
+    async function navigate(url, push) {
+        try {
+            const res = await fetch(url, {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                credentials: "same-origin"
+            });
+            const type = res.headers.get("content-type") || "";
+            if (!res.ok || type.indexOf("text/html") < 0) { location.href = url; return; }
+
+            const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+            const newBody = doc.getElementById("pageBody");
+
+            // Not our layout (admin, login...) -> do a normal page load
+            if (!newBody || !doc.getElementById("audioPlayer")) { location.href = url; return; }
+
+            hidePlayer();
+            addNewStyles(doc);
+            pageBody.innerHTML = newBody.innerHTML;
+            document.title = doc.title;
+            syncChrome(doc);
+
+            if (push) history.pushState({ gt: true }, "", res.url || url);
+
+            runPageScripts(doc);
+            highlightPlaying();
+            if (mainScroll) mainScroll.scrollTop = 0;
+        } catch (err) {
+            location.href = url;
+        }
+    }
+
+    // Sidebar / header / in-page links
+    document.addEventListener("click", function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const a = e.target.closest("a");
+        if (!a || !a.closest(".sidebar, .topbar, #pageBody")) return;
+        if (!isInPageLink(a)) return;
+        e.preventDefault();
+        navigate(a.href, true);
+    });
+
+    // Search box
+    document.addEventListener("submit", function (e) {
+        const form = e.target;
+        if (!form.matches(".search-wrap")) return;
+        e.preventDefault();
+        const params = new URLSearchParams(new FormData(form)).toString();
+        navigate(form.action + (params ? "?" + params : ""), true);
+    });
+
+    // Back / forward buttons
+    window.addEventListener("popstate", function () { navigate(location.href, false); });
 
     // =========================================================
     //  Start-up

@@ -1,39 +1,35 @@
-﻿
-@model GrooveyTunes.Models.Playlist
+﻿@model GrooveyTunes.Models.Playlist
 
 @{
     ViewBag.Title = "Create Playlist";
 }
 
-<div class="container mt-4">
+<div class="gt-page">
+    <h2 class="gt-page-title">Create New Playlist</h2>
+    <p class="gt-page-subtitle">Give your playlist a name and a cover image.</p>
 
-    <h2>Create New Playlist</h2>
-
-    @using (Html.BeginForm("Create", "Playlist", FormMethod.Post))
+    @using (Html.BeginForm("Create", "Playlist", FormMethod.Post, new { @class = "gt-form" }))
     {
         @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "gt-error" })
 
-        <div class="form-group mb-3">
-            @Html.LabelFor(m => m.PlaylistName, "Playlist Name")
+        <div class="gt-field">
+            @Html.LabelFor(m => m.PlaylistName, "Playlist Name", new { @class = "gt-label" })
             @Html.TextBoxFor(m => m.PlaylistName,
-                     new { @class = "form-control", placeholder = "Enter playlist name" })
-            @Html.ValidationMessageFor(m => m.PlaylistName, "",
-                     new { @class = "text-danger" })
+                new { @class = "gt-input", placeholder = "Enter playlist name", autofocus = "autofocus" })
+            @Html.ValidationMessageFor(m => m.PlaylistName, "", new { @class = "gt-error" })
         </div>
 
-        <div class="form-group mb-3">
-            @Html.LabelFor(m => m.ImagePath, "Playlist Image Path")
+        <div class="gt-field">
+            @Html.LabelFor(m => m.ImagePath, "Playlist Image Path", new { @class = "gt-label" })
             @Html.TextBoxFor(m => m.ImagePath,
-                     new { @class = "form-control", placeholder = "~/Content/Images/playlist.jpg" })
+                new { @class = "gt-input", placeholder = "~/Content/Images/playlist.jpg" })
+            @Html.ValidationMessageFor(m => m.ImagePath, "", new { @class = "gt-error" })
         </div>
 
-        <button type="submit" class="btn btn-primary">
-            Create Playlist
-        </button>
-
-        @Html.ActionLink("Cancel", "Index", "Playlist",
-                 null, new { @class = "btn btn-secondary" })
+        <div class="gt-actions">
+            <button type="submit" class="gt-btn gt-btn-primary">Create Playlist</button>
+            @Html.ActionLink("Cancel", "Index", "Playlist", null, new { @class = "gt-btn gt-btn-ghost" })
+        </div>
     }
-
 </div>
-

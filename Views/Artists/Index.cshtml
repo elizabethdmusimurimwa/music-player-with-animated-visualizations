@@ -1,42 +1,28 @@
-﻿
-@model IEnumerable<GrooveyTunes.Models.Artist>
+﻿@model IEnumerable<GrooveyTunes.Models.Artist>
 
 @{
     ViewBag.Title = "Artists";
 }
 
-<div class="container mt-4">
-    <h2>Artists</h2>
-    <p>Explore the artists available on GroovyTunes.</p>
+<div class="gt-page">
+    <h2 class="gt-page-title">Artists</h2>
+    <p class="gt-page-subtitle">Pick an artist and start listening.</p>
 
-    <div class="row">
+    <div class="gt-card-grid">
         @foreach (var artist in Model)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-
-                    @if (!string.IsNullOrEmpty(artist.ImagePath))
-                    {
-                        <img src="@Url.Content(artist.ImagePath)"
-                             class="card-img-top"
-                             alt="@artist.ArtistName"
-                             style="height: 220px; object-fit: cover;" />
-                    }
-
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            @artist.ArtistName
-                        </h5>
-
-                        <a href="@Url.Action("Details", "Artists",
-                            new { id = artist.ArtistId })"
-                           class="btn btn-primary">
-                            View Artist
-                        </a>
-                    </div>
-
+            <a href="@Url.Action("Details", "Artists", new { id = artist.ArtistId })"
+               class="gt-tile">
+                @if (!string.IsNullOrEmpty(artist.ImagePath))
+                {
+                    <img src="@Url.Content(artist.ImagePath)"
+                         alt="@artist.ArtistName"
+                         class="gt-tile-img" />
+                }
+                <div class="gt-tile-text">
+                    <span class="gt-tile-title">@artist.ArtistName</span>
                 </div>
-            </div>
+            </a>
         }
     </div>
 </div>

@@ -16,28 +16,40 @@ namespace GrooveyTunes.Controllers
                           .Include(s => s.Artist)
                           .OrderBy(s => s.Title)
                           .ToList();
+
+            ViewBag.Search = null;
+
             return View(songs);
         }
 
         // GET: Home/Search?query=abc
         public ActionResult Search(string query)
         {
-            var songs = db.Songs.Include(s => s.Artist).AsQueryable();
+            var songs = db.Songs
+                          .Include(s => s.Artist)
+                          .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(query))
             {
-                songs = songs.Where(s => s.Title.Contains(query) ||
-                                         s.Album.Contains(query) ||
-                                         s.Artist.ArtistName.Contains(query));
+                query = query.Trim();
+
+                songs = songs.Where(s =>
+                    s.Title.Contains(query) ||
+                    s.Album.Contains(query) ||
+                    s.Artist.ArtistName.Contains(query)
+                );
             }
 
-            ViewBag.Query = query;
+            ViewBag.Search = query;
+
             return View("Index", songs.OrderBy(s => s.Title).ToList());
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) db.Dispose();
+            if (disposing)
+                db.Dispose();
+
             base.Dispose(disposing);
         }
     }

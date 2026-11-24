@@ -1,0 +1,90 @@
+﻿
+@model IEnumerable<GrooveyTunes.Models.Song>
+
+@{
+    ViewBag.Title = "Add Songs";
+    int playlistId = (int)ViewBag.PlaylistId;
+    string playlistName = (string)ViewBag.PlaylistName;
+}
+
+<div class="page-head">
+    <h1>Add Songs to @playlistName</h1>
+    <p>Select the songs you want to include in this playlist.</p>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="empty-state">
+        <p>All available songs have already been added to this playlist.</p>
+    </div>
+}
+else
+{
+    using (Html.BeginForm("AddSong", "Playlist", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="playlistId" value="@playlistId" />
+
+        <table class="song-table">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Title</th>
+                    <th>Artist</th>
+                    <th>Album</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var song in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox"
+                                   name="selectedSongIds"
+                                   value="@song.SongId" />
+                        </td>
+
+                        <td>@song.Title</td>
+
+                        <td class="muted">
+                            @(song.Artist != null
+                                ? song.Artist.ArtistName
+                                : "Unknown artist")
+                        </td>
+
+                        <td class="muted">@song.Album</td>
+
+                        <td class="muted">
+                            @(TimeSpan.FromSeconds(song.Duration).ToString(@"m\:ss"))
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="gt-actions" style="margin-top:18px;">
+
+            <button type="submit"
+                    class="gt-btn gt-btn-primary"
+                    style="padding:6px 12px; font-size:13px;">
+                Add Selected Songs
+            </button>
+
+            @Html.ActionLink(
+                    "Cancel",
+                    "Details",
+                    "Playlist",
+                    new { id = playlistId },
+                    new
+                    {
+                        @class = "gt-btn gt-btn-ghost",
+                        style = "padding:6px 12px; font-size:13px;"
+                    }
+                )
+
+        </div>
+    }
+}

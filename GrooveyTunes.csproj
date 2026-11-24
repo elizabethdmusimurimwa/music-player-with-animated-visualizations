@@ -94,12 +94,16 @@
       <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <Content Include="Content\admin.css" />
     <Content Include="Content\auth.css" />
     <Content Include="Content\genres.css" />
     <Content Include="Content\Groovey-home.css" />
+    <Content Include="Content\Music\heartbreak-anniversary.mp3" />
+    <Content Include="Content\Music\long-distance-love.mp3" />
+    <Content Include="Content\Music\kill-bill.mp3" />
     <Content Include="Content\Music\side-to-side.mp3" />
+    <Content Include="Content\Music\im-there.mp3" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\admin.js" />
@@ -167,6 +171,7 @@
     <Content Include="Views\Shared\_MusicPlayer.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Signup.cshtml" />
+    <Content Include="Views\Playlist\AddSong.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
