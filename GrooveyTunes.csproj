@@ -98,7 +98,7 @@
     <Content Include="Content\admin.css" />
     <Content Include="Content\auth.css" />
     <Content Include="Content\genres.css" />
-    <Content Include="Content\Groovey-home.css" />
+    <Content Include="Content\Groovy-home.css" />
     <Content Include="Content\Music\heartbreak-anniversary.mp3" />
     <Content Include="Content\Music\long-distance-love.mp3" />
     <Content Include="Content\Music\kill-bill.mp3" />
@@ -108,7 +108,7 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\auth.js" />
-    <Content Include="Scripts\GrooveyTunes.js" />
+    <Content Include="Scripts\GroovyTunes.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

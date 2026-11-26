@@ -7,8 +7,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - GrooveyTunes</title>
-    <link rel="stylesheet" href="@Url.Content("~/Content/Groovey-home.css")?v=@DateTime.Now.Ticks" />
+    <title>@ViewBag.Title - GroovyTunes</title>
+    <link rel="stylesheet" href="@Url.Content("~/Content/Groovy-home.css")?v=@DateTime.Now.Ticks" />
 </head>
 
 <body>
@@ -17,7 +17,7 @@
         <!-- Header -->
         <header class="topbar">
 
-            <a href="@Url.Action("Index", "Home")" class="brand">♫ GrooveyTunes</a>
+            <a href="@Url.Action("Index", "Home")" class="brand">♫ GroovyTunes</a>
 
             <div class="topbar-center">
                 <a href="@Url.Action("Index", "Home")" class="icon-tile @active("Home")" title="Home">
@@ -108,7 +108,7 @@
     <!-- Shared music player (bottom bar) -->
     @Html.Partial("_MusicPlayer")
 
-<script src="@Url.Content("~/Scripts/GrooveyTunes.js")?v=@DateTime.Now.Ticks"></script>
+<script src="@Url.Content("~/Scripts/GroovyTunes.js")?v=@DateTime.Now.Ticks"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
