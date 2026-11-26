@@ -9,7 +9,6 @@
 <div class="page-head reveal">
     <div>
         <h1>@ViewBag.Heading</h1>
-        <p class="sub">Fields marked <span class="req">*</span> are required.</p>
     </div>
     <div class="head-actions">
         <a class="btn btn-ghost" href="@Url.Action("Index", "AdminSongs")">@AdminIcons.Draw("back") Back to songs</a>
@@ -62,7 +61,7 @@
         <div class="field @Html.FieldClass("Album")">
             <label for="album">Album</label>
             <div class="input-wrap">
-                @Html.TextBoxFor(m => m.Album, new { id = "album", data_rule = "album", placeholder = "Optional", maxlength = 100, autocomplete = "off" })
+                @Html.TextBoxFor(m => m.Album, new { id = "album", data_rule = "album", maxlength = 100, autocomplete = "off" })
             </div>
             <div class="error">@Html.ValidationMessageFor(m => m.Album)</div>
         </div>
@@ -108,7 +107,7 @@
     <!-- Right column: live previews -->
     <aside class="form-side">
         <div class="preview-card">
-            <p class="side-title">Cover art <small class="muted">(optional)</small></p>
+            <p class="side-title">Cover art</p>
             <div class="cover-preview" id="coverBox">
                 <img id="coverPreview" alt="" hidden />
                 <span class="cover-empty" id="coverEmpty">@AdminIcons.Draw("song")</span>

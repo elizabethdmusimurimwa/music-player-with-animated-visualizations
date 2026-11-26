@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;   // needed for Include()
+﻿using System.Data.Entity;   
 using System.Linq;
 using System.Web.Mvc;
 using GrooveyTunes.Models;

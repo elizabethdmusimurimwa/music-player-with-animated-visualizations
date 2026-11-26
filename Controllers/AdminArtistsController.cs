@@ -41,7 +41,7 @@ namespace GrooveyTunes.Controllers
             return View(model);
         }
 
-        // ---------- ADD ----------
+        // ADD 
 
         public ActionResult Create()
         {
@@ -69,7 +69,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- EDIT ----------
+        // EDIT 
 
         public ActionResult Edit(int id)
         {
@@ -116,7 +116,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- DELETE ----------
+        // DELETE 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -145,7 +145,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- helpers ----------
+        // helpers
 
         private void CheckArtist(ArtistFormViewModel model)
         {

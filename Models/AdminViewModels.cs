@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace GrooveyTunes.Models
 {
-    // ============================================================
+   
     //  Paging (tables show 10 rows per page)
-    // ============================================================
+  
     public class PagerInfo
     {
         public int Page { get; set; }
@@ -37,9 +37,8 @@ namespace GrooveyTunes.Models
         }
     }
 
-    // ============================================================
-    //  Rows shown in the admin tables
-    // ============================================================
+      //  Rows shown in the admin tables
+    
     public class SongRow
     {
         public int SongId { get; set; }
@@ -77,9 +76,9 @@ namespace GrooveyTunes.Models
         public int PlaylistCount { get; set; }
     }
 
-    // ============================================================
+    
     //  Whole-page models for the list pages
-    // ============================================================
+    
     public class DashboardViewModel
     {
         public int SongCount { get; set; }
@@ -125,9 +124,7 @@ namespace GrooveyTunes.Models
         public int AdminCount { get; set; }    // how many admins exist right now
     }
 
-    // ============================================================
     //  Form models (rules are repeated in Scripts/admin.js for instant feedback)
-    // ============================================================
     public class SongFormViewModel
     {
         public int SongId { get; set; }
@@ -193,9 +190,7 @@ namespace GrooveyTunes.Models
         public string GenreName { get; set; }
     }
 
-    // ============================================================
     //  Public Genres page (inside the friend's site layout)
-    // ============================================================
     public class GenreDetailsViewModel
     {
         public Genre Genre { get; set; }

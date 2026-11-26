@@ -9,7 +9,6 @@
 <div class="page-head reveal">
     <div>
         <h1>@ViewBag.Heading</h1>
-        <p class="sub">Fields marked <span class="req">*</span> are required.</p>
     </div>
     <div class="head-actions">
         <a class="btn btn-ghost" href="@Url.Action("Index", "AdminArtists")">@AdminIcons.Draw("back") Back to artists</a>
@@ -36,7 +35,7 @@
         <div class="field @Html.FieldClass("Biography")">
             <label for="bio">Biography</label>
             <div class="input-wrap">
-                @Html.TextAreaFor(m => m.Biography, 7, 40, new { id = "bio", data_rule = "biography", placeholder = "A few lines about the artist (optional)", maxlength = 2000 })
+                @Html.TextAreaFor(m => m.Biography, 7, 40, new { id = "bio", data_rule = "biography", maxlength = 2000 })
             </div>
             <div class="counter" id="bioCounter">0 / 2000</div>
             <div class="error">@Html.ValidationMessageFor(m => m.Biography)</div>
@@ -50,7 +49,7 @@
 
     <aside class="form-side">
         <div class="preview-card">
-            <p class="side-title">Artist photo <small class="muted">(optional)</small></p>
+            <p class="side-title">Artist photo</p>
             <div class="cover-preview round" id="coverBox">
                 <img id="coverPreview" alt="" hidden />
                 <span class="cover-empty" id="coverEmpty">@AdminIcons.Draw("artist")</span>
@@ -67,7 +66,7 @@
             <div class="field @Html.FieldClass("ImagePath")">
                 <label for="imagePath">or image path / link</label>
                 <div class="input-wrap">
-                    @Html.TextBoxFor(m => m.ImagePath, new { id = "imagePath", data_rule = "pathOrUrl", placeholder = "~/Content/Images/artist.jpg", autocomplete = "off" })
+                    @Html.TextBoxFor(m => m.ImagePath, new { id = "imagePath", data_rule = "pathOrUrl", autocomplete = "off" })
                 </div>
                 <div class="error">@Html.ValidationMessageFor(m => m.ImagePath)</div>
             </div>

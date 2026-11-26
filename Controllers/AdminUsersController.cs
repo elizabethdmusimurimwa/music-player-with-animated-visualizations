@@ -44,7 +44,7 @@ namespace GrooveyTunes.Controllers
             return View(model);
         }
 
-        // ---------- PROMOTE ----------
+        // PROMOTE
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -70,7 +70,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- DEMOTE ----------
+        // DEMOTE 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -102,7 +102,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- DELETE ----------
+        // DELETE 
 
         [HttpPost]
         [ValidateAntiForgeryToken]

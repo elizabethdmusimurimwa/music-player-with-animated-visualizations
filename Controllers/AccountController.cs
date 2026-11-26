@@ -11,7 +11,7 @@ namespace GrooveyTunes.Controllers
     {
         private GrooveyTunesContext db = new GrooveyTunesContext();
 
-        // ---------- LOGIN ----------
+        //LOGIN 
 
         [HttpGet]
         public ActionResult Login(string returnUrl)
@@ -30,13 +30,13 @@ namespace GrooveyTunes.Controllers
         {
             ViewBag.ReturnUrl = returnUrl;
 
-            // 1. Did the form pass the rules in LoginViewModel?
+            
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // 2. Does this user exist, and is the password right?
+            // check if user exist & if pwd is right
             string email = model.Email.Trim().ToLower();
             AppUser user = db.AppUsers.FirstOrDefault(u => u.Email == email);
 
@@ -47,7 +47,7 @@ namespace GrooveyTunes.Controllers
                 return View(model);
             }
 
-            // 3. Log them in
+            // Log in
             SignIn(user, model.RememberMe);
 
             if (Url.IsLocalUrl(returnUrl))
@@ -62,7 +62,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // ---------- SIGN UP ----------
+        // SIGN UP 
 
         [HttpGet]
         public ActionResult Signup()
@@ -122,7 +122,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Login");
         }
 
-        // ---------- LOGOUT ----------
+        //LOGOUT 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -132,9 +132,9 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Login");
         }
 
-        // ---------- helpers ----------
+        // helpers 
 
-        // Creates the login cookie. The user's role is stored inside it (see Global.asax).
+        // Creates the login cookie. The user's role is stored inside it (in Global.asax).
         private void SignIn(AppUser user, bool remember)
         {
             DateTime expires = remember ? DateTime.Now.AddDays(14) : DateTime.Now.AddHours(2);

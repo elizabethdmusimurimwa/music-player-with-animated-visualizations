@@ -50,7 +50,7 @@ namespace GrooveyTunes.Controllers
             return View(model);
         }
 
-        // ---------- ADD ----------
+        // ADD 
 
         // GET: AdminSongs/Create
         public ActionResult Create()
@@ -78,7 +78,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- EDIT ----------
+        // EDIT 
 
         // GET: AdminSongs/Edit/5
         public ActionResult Edit(int id)
@@ -129,7 +129,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- DELETE ----------
+        // DELETE
 
         // POST: AdminSongs/Delete/5
         [HttpPost]
@@ -154,7 +154,7 @@ namespace GrooveyTunes.Controllers
             return RedirectToAction("Index");
         }
 
-        // ---------- helpers ----------
+        // helpers
 
         private ActionResult FormView(SongFormViewModel model, string heading)
         {

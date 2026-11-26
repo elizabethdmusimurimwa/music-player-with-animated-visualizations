@@ -11,10 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const IMAGE_TYPES = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
   const PATH_PATTERN = /^(~\/|https?:\/\/).+/;
 
-  // ============================================================
+  
   //  1. Validation rules
   //  A rule returns "" when the value is fine, or an error message.
-  // ============================================================
 
   // Checks the file chosen in a <input type="file">
   function checkFile(input, allowed, maxMb) {
@@ -63,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return "";
     },
 
-    // A drop-down that must have something chosen (message comes from data-message)
+    // A drop-down that must have something chosen 
     select(value, input) {
       if (value === "") return input.dataset.message || "Choose an option.";
       return "";
@@ -78,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return "";
     },
 
-    // Audio needs an uploaded file OR a path
+    // Audio needs an uploaded file or a path
     audioPath(value) {
       value = value.trim();
       const fileInput = document.getElementById("audioFile");
@@ -107,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // ----- Helpers -----
+  // Helpers
 
   // Runs the rule for one input and shows / hides its error message
   function validateField(input) {
@@ -137,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return allGood;
   }
 
-  // ----- Wire up the entity forms (song / artist / genre) -----
+  // Wire up the entity forms (song / artist / genre) 
 
   const form = document.querySelector("form.form-grid");
 
@@ -145,12 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitBtn = document.getElementById("submitBtn");
 
     form.querySelectorAll("[data-rule]").forEach(function (input) {
-      // Show the error after the user leaves the field...
+      // Show the error after the user leaves the field
       input.addEventListener("blur", function () {
         if (input.type === "file" || input.value !== "") validateField(input);
       });
 
-      // ...and keep it updated live once the field has been flagged
+      // keep it updated live once the field has been flagged
       const liveEvent = (input.tagName === "SELECT" || input.type === "file") ? "change" : "input";
       input.addEventListener(liveEvent, function () {
         const field = input.closest(".field");
@@ -191,9 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
     setUpGenreDemo();
   }
 
-  // ============================================================
   //  Small helpers used by the forms
-  // ============================================================
 
   // "12 / 2000" character counters
   function setUpCounters() {
@@ -338,12 +335,10 @@ document.addEventListener("DOMContentLoaded", function () {
       demo.textContent = input.value.trim() === "" ? "Your genre" : input.value.trim();
     });
   }
-
-  // ============================================================
   //  2. Confirm dialog for buttons with data-post
   //  <button data-post="/AdminSongs/Delete/5" data-confirm-title="..." data-confirm-text="...">
   //  Without data-confirm-title the button posts straight away.
-  // ============================================================
+  
 
   const modal = document.getElementById("confirmModal");
   const postForm = document.getElementById("postForm");
@@ -406,9 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // ============================================================
   //  3. Toasts, count-up numbers, mobile menu
-  // ============================================================
 
   document.querySelectorAll(".toast").forEach(function (toast, index) {
     setTimeout(function () { toast.classList.add("show"); }, 150 + index * 120);

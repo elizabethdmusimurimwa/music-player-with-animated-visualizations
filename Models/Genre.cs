@@ -3,7 +3,7 @@
 namespace GrooveyTunes.Models
 {
     // One row in the Genres table.
-    // Songs link to a genre through Song.GenreId (the Song class is left exactly as it was).
+    // Songs link to a genre through Song.GenreId 
     public class Genre
     {
         [Key]
